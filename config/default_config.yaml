@@ -1,0 +1,116 @@
+# coTherapist Configuration File
+
+model:
+  name: "meta-llama/Llama-3.2-1B-Instruct"
+  base_model: "meta-llama/Llama-3.2-1B-Instruct"
+  max_length: 2048
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  
+fine_tuning:
+  # LoRA Configuration
+  use_lora: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  
+  # Training parameters
+  num_epochs: 3
+  batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-4
+  warmup_steps: 100
+  max_grad_norm: 0.3
+  weight_decay: 0.001
+  
+  # Quantization
+  use_4bit: true
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_quant_type: "nf4"
+  use_nested_quant: true
+  
+retrieval:
+  # RAG Configuration
+  enabled: true
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  chunk_size: 512
+  chunk_overlap: 50
+  top_k: 3
+  similarity_threshold: 0.7
+  vector_store: "faiss"
+  knowledge_base_path: "data/knowledge_base"
+  
+agentic:
+  # Agentic Reasoning
+  enabled: true
+  max_reasoning_steps: 5
+  reflection_enabled: true
+  self_critique_enabled: true
+  chain_of_thought: true
+  
+safety:
+  # Safety Mechanisms
+  enabled: true
+  toxicity_threshold: 0.7
+  block_harmful_content: true
+  crisis_detection: true
+  crisis_keywords:
+    - "suicide"
+    - "kill myself"
+    - "end my life"
+    - "self-harm"
+    - "hurt myself"
+  emergency_response: "I'm really concerned about what you're sharing. Please reach out to a crisis helpline immediately: National Suicide Prevention Lifeline: 988 or 1-800-273-8255. You deserve support right now."
+  
+empathy:
+  # Empathy Enhancement
+  enabled: true
+  validation_phrases: true
+  emotion_recognition: true
+  reflective_listening: true
+  
+evaluation:
+  # COTHERF Framework
+  metrics:
+    - empathy
+    - relevance
+    - informativeness
+    - safety
+    - therapeutic_alliance
+    - clinical_accuracy
+  
+psychometric:
+  # Personality Traits Analysis
+  enabled: true
+  traits:
+    - Agreeableness
+    - Conscientiousness
+    - Emotional_Stability
+    - Openness
+    - Extraversion
+  
+data:
+  training_data_path: "data/training"
+  validation_split: 0.1
+  test_split: 0.1
+  max_samples: null
+  
+logging:
+  log_level: "INFO"
+  log_dir: "logs"
+  use_wandb: false
+  wandb_project: "coTherapist"
+  
+output:
+  model_output_dir: "models/fine_tuned"
+  checkpoint_dir: "checkpoints"
+  results_dir: "results"
